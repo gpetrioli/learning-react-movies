@@ -64,7 +64,7 @@ export default class MovieList extends Component{
                                 <p className="card-text overview">{movie.overview}</p>
                               </div>
                               <div className="card-footer">
-                                <a href="#" className="card-link">more</a>
+                                <Link to={`/movie/${movie.id}`} className="card-link">more</Link>
                               </div>
                             </li>
                         </div>

@@ -3,6 +3,7 @@ import {Route,Link} from 'react-router-dom';
 import './App.css';
 import GenreList from './Components/GenreList';
 import MovieList from './Components/MovieList';
+import MovieDetails from './Components/MovieDetails';
 
 
 class App extends Component {
@@ -23,7 +24,6 @@ class App extends Component {
     
     
     render() {
-    const genreName = this.state.genreName;
     return (
         <div className="App">
             <nav className="navbar navbar-toggleable-md navbar-light bg-faded">
@@ -47,6 +47,7 @@ class App extends Component {
                     {match.params.genreId && <MovieList key={match.params.genreId} genre={match.params.genreId} imagepath={this.state.baseUrl} page={match.params.page || 1}/>}
                 </div>
             )} />
+            <Route path="/movie/:movieId" render={({match})=><MovieDetails {...match} imagepath={this.state.baseUrl} />}></Route>
         </div>
     );
     }
