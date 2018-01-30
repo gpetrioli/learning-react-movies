@@ -1,0 +1,45 @@
+html:before{
+    content:'';
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:-1;
+    background-image: var(--backdrop);
+    background-size:cover;
+    background-attachment: fixed;
+    filter:sepia(100%) blur(3px)
+}
+
+
+
+/*Genre list*/
+#genre-list a{cursor:pointer;}
+#genre-list .selected,
+#genre-list .selected a{
+    color:red
+}
+
+
+/*Movie list*/
+#movie-list ul{list-style:none;margin:0;padding:0}
+#movie-list .card{box-shadow:0 0 12px -6px #000;}
+#movie-list .card-block{background:rgba(255,255,255,0.60)}
+#movie-list > .card-block{background:transparent}
+#movie-list .overview{
+    max-height:calc(4em * 1.5); /* 1.5 is the line-height*/
+    overflow:hidden;
+}
+
+.card{background:rgba(255,255,255,0.5)}
+.card-img-top{width:100%;}
+
+.card-group .w-25,
+.card-deck .w-25{flex-basis:calc(25% - 30px)!important}
+.card-group .w-50,
+.card-deck .w-50{flex-basis:calc(50% - 30px)!important}
+.card-group .w-75,
+.card-deck .w-75{flex-basis:calc(75% - 30px)!important}
+.card-group .w-100,
+.card-deck .w-100{flex-basis:calc(100% - 30px)!important}
