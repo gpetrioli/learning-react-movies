@@ -6,6 +6,7 @@ html:before{
     right:0;
     bottom:0;
     z-index:-1;
+    background-color:rgba(0,0,0,0.7);
     background-image: var(--backdrop);
     background-size:cover;
     background-attachment: fixed;

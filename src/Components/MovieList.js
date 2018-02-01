@@ -36,9 +36,9 @@ export default class MovieList extends Component{
     }
     
     _handleMouseEnter(e){
-        const backdrop = e.target.closest('.card').dataset.backdrop;
+        //const backdrop = e.target.closest('.card').dataset.backdrop;
         
-        document.documentElement.style.setProperty('--backdrop',`url('${backdrop}')`);
+        //document.documentElement.style.setProperty('--backdrop',`url('${backdrop}')`);
     }
     _handleMouseLeave(){
         //document.documentElement.style.backgroundImage = 'none';
