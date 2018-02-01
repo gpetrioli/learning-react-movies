@@ -9,7 +9,7 @@
     "react-moment": "^0.7.0",
     "react-router-dom": "^4.2.2",
     "react-router5": "^5.4.2",
-    "react-scripts": "1.1.0"
+    "react-scripts-cssmodules": "^1.0.171"
   },
   "scripts": {
     "start": "react-scripts start",
