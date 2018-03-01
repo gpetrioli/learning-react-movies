@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
 import {Link, Redirect} from 'react-router-dom'
+import styles from './MovieList.module.css'
 
 export default class MovieList extends Component{
     constructor(props){
         super(props)
         
         this.state = {movies:[], fail:false, total_pages:0}
-        this._handleMouseEnter = this._handleMouseEnter.bind(this);
-        this._handleMouseLeave = this._handleMouseLeave.bind(this);
     }
     
     _fetch(page){
@@ -34,15 +33,7 @@ export default class MovieList extends Component{
             this._fetch(props.page);
         }
     }
-    
-    _handleMouseEnter(e){
-        //const backdrop = e.target.closest('.card').dataset.backdrop;
-        
-        //document.documentElement.style.setProperty('--backdrop',`url('${backdrop}')`);
-    }
-    _handleMouseLeave(){
-        //document.documentElement.style.backgroundImage = 'none';
-    }
+
     
     render(){
         const {page = 1} = this.props;
@@ -54,21 +45,7 @@ export default class MovieList extends Component{
                 <div className="card-header">Movies <div className="float-right"><Paging route={`/movies/genre/${this.props.genre}/{page}`} genre={this.props.genre} page={+page} total_pages={this.state.total_pages} show_pages={6} className="justify-content-end"></Paging></div></div>
                <div className="card-block">
                 <ul className="d-flex flex-wrap" >
-                    {this.state.movies.map(movie=>( movie.poster_path &&
-                        <div className="col-md-6 col-lg-4 col-xl-3 pb-3" key={movie.id}>
-                            <li className="card h-100" onMouseOver={this._handleMouseEnter} onMouseLeave={this._handleMouseLeave} data-backdrop={`${this.props.imagepath}w1280${movie.backdrop_path}`}>
-                              <img className="card-img-top img-fluid" src={`${this.props.imagepath}w300${movie.poster_path}`} alt="Card image cap" />
-                              <div className="card-block">
-                                <h4 className="card-title">{movie.title}</h4>
-                                <p className="card-text"><small className="text-muted">Released on <Moment format="DD-MM-YYYY">{movie.release_date}</Moment></small></p>
-                                <p className="card-text overview">{movie.overview}</p>
-                              </div>
-                              <div className="card-footer">
-                                <Link to={`/movie/${movie.id}`} className="card-link">more</Link>
-                              </div>
-                            </li>
-                        </div>
-                    ))}
+                    {this.state.movies.map(movie=>( movie.poster_path && <MoviePreview {...this.props} movie={movie}></MoviePreview>) )}
                 </ul>
                 </div>
                 <div className="card-footer">
@@ -79,6 +56,30 @@ export default class MovieList extends Component{
     }
 }
 
+
+
+class MoviePreview extends Component{
+    render(){
+        const {movie} = this.props;
+        
+        return(
+            <div className="col-md-6 col-lg-4 col-xl-3 pb-3" key={movie.id}>
+                <li className="card h-100"  data-backdrop={`${this.props.imagepath}w1280${movie.backdrop_path}`}>
+                  <img className="card-img-top img-fluid" src={`${this.props.imagepath}w300${movie.poster_path}`} alt="Card image cap" />
+                  <div className="card-block">
+                    <h4 className="card-title">{movie.title}</h4>
+                    <p className="card-text"><small className="text-muted">Released on <Moment format="DD-MM-YYYY">{movie.release_date}</Moment></small></p>
+                    <p className={`card-text ${styles['movie-genres']}`}>{movie.genre_ids.map(id=>(<small class="text-muted">{id}</small>))}</p>
+                    <p className="card-text overview">{movie.overview}</p>
+                  </div>
+                  <div className="card-footer">
+                    <Link to={`/movie/${movie.id}`} className="card-link float-right">more</Link>
+                  </div>
+                </li>
+            </div>
+            )
+    }
+}
 
 
 class Paging extends Component{
