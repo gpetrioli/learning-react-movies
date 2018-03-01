@@ -16,6 +16,9 @@ export default class GenreList extends Component{
             .then(json=>this.setState({genres: json.genres}))
     }
     
+    getGenreNameById(genreId){
+        return this.state.genres.find(genre=>genre.id === genreId).name
+    }
     
     render(){
         const currentGenre = this.props.genre;
