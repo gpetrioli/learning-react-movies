@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 
 export default class GenreList extends Component{
     constructor(props){
@@ -22,6 +22,7 @@ export default class GenreList extends Component{
     
     render(){
         const currentGenre = this.props.genre;
+        if(this.state.genres.length && !currentGenre) return <Redirect to={`/movies/genre/${this.state.genres[0].id}`} />;
         return (
             <div id="genre-list" className="card w-25">
                <div className="card-header">Genre List</div>
