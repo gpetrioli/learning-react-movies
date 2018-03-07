@@ -1,27 +1,15 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
-import {Link, Redirect} from 'react-router-dom'
+import {Link, Redirect, withRouter} from 'react-router-dom'
 import styles from './MovieList.module.css'
+import { moviesFetch } from '../Redux/actions.js'
+import { connect } from 'react-redux'
 
-export default class MovieList extends Component{
-    constructor(props){
-        super(props)
-        
-        this.state = {movies:[], fail:false, total_pages:0}
-    }
+class MovieList extends Component{
     
     _fetch(page){
-        let endpoint = `https://api.themoviedb.org/3/discover/movie?api_key=c90b7e72cfb0ae1dab40f95effe976ab&with_genres=${this.props.genre}&page=${page}`;
-        console.log(endpoint);
         if (this.props.genre!==null){
-            fetch(endpoint)
-                .then(response=>response.json())
-                .then(json=>this.setState({
-                movies: json.results || [],
-                fail: (json.results) ? false : true,
-                page: +json.page,
-                total_pages: Math.min(+json.total_pages,1000)
-            }))
+            this.props.getMovies(this.props.genre,page)
         }
     }
     
@@ -36,20 +24,18 @@ export default class MovieList extends Component{
 
     
     render(){
-        const {page = 1} = this.props;
-        if (this.state.fail){
-            return <Redirect to="/movies/genre" push={true} />
-        }
+        const {page = 1, baseUrl} = this.props;
+        const {list:movies = [], total_pages} = this.props.movies;
         return (
             <div id="movie-list" className="card w-75">
-                <div className="card-header">Movies <div className="float-right"><Paging route={`/movies/genre/${this.props.genre}/{page}`} genre={this.props.genre} page={+page} total_pages={this.state.total_pages} show_pages={6} className="justify-content-end"></Paging></div></div>
+                <div className="card-header">Movies <div className="float-right"><Paging route={`/movies/genre/${this.props.genre}/{page}`} genre={this.props.genre} page={+page} total_pages={total_pages} show_pages={6} className="justify-content-end"></Paging></div></div>
                <div className="card-block">
                 <ul className="d-flex flex-wrap" >
-                    {this.state.movies.map(movie=>( movie.poster_path && <MoviePreview {...this.props} movie={movie}></MoviePreview>) )}
+                    {movies.map(movie=>( movie.poster_path && <MoviePreview {...this.props} imagepath={baseUrl} movie={movie} key={movie.id}></MoviePreview>) )}
                 </ul>
                 </div>
                 <div className="card-footer">
-                    <Paging route={`/movies/genre/${this.props.genre}/{page}`} genre={this.props.genre} page={+page} total_pages={this.state.total_pages} show_pages={10} className="justify-content-center"></Paging>
+                    <Paging route={`/movies/genre/${this.props.genre}/{page}`} genre={this.props.genre} page={+page} total_pages={total_pages} show_pages={10} className="justify-content-center"></Paging>
                 </div>
             </div>
         )
@@ -58,7 +44,7 @@ export default class MovieList extends Component{
 
 
 
-class MoviePreview extends Component{
+class _MoviePreview extends Component{
     render(){
         const {movie} = this.props;
         
@@ -69,7 +55,7 @@ class MoviePreview extends Component{
                   <div className="card-block">
                     <h4 className="card-title">{movie.title}</h4>
                     <p className="card-text"><small className="text-muted">Released on <Moment format="DD-MM-YYYY">{movie.release_date}</Moment></small></p>
-                    <p className={`card-text ${styles['movie-genres']}`}>{movie.genre_ids.map(id=>(<small class="text-muted">{id}</small>))}</p>
+                    <p className={`card-text ${styles['movie-genres']}`}>{movie.genre_ids.map(id=>(<small className="text-muted" key={id}>{id}</small>))}</p>
                     <p className="card-text overview">{movie.overview}</p>
                   </div>
                   <div className="card-footer">
@@ -80,9 +66,9 @@ class MoviePreview extends Component{
             )
     }
 }
+const MoviePreview = withRouter(_MoviePreview)
 
-
-class Paging extends Component{
+class _Paging extends Component{
     render(){
         const {
             page,
@@ -95,6 +81,7 @@ class Paging extends Component{
         
         if (min_page === 1) max_page = Math.min(min_page+show_pages-1, total_pages)
         if (max_page == total_pages) min_page = Math.max(max_page-show_pages+1,1);
+        if (!total_pages) return '';
         return (
             <nav>
                 <ul className={`pagination ${this.props.className}`}>
@@ -109,3 +96,22 @@ class Paging extends Component{
                                                                
     }
 }
+const Paging = withRouter(_Paging);
+
+
+
+const mapStateToProps = (state) => {
+    return {
+        movies: state.movies,
+        baseUrl: state.configuration.baseUrl
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getMovies: (genre,page) => {
+            dispatch(moviesFetch(genre,page))
+        }
+    }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MovieList));

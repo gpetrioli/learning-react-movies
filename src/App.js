@@ -1,25 +1,28 @@
 import React, { Component } from 'react';
-import {Route,Link} from 'react-router-dom';
+import {Route,Link, withRouter } from 'react-router-dom';
 import './App.css';
 import GenreList from './Components/GenreList';
 import MovieList from './Components/MovieList';
 import MovieDetails from './Components/MovieDetails';
 
+import { connect } from 'react-redux';
+import {configurationFetch} from './Redux/actions.js';
+
 
 class App extends Component {
     constructor(props){
         super(props)
-        this.state = {
-            baseUrl:null
-        }
     }
     
     componentDidMount(){
+        /*
         let endpoint = 'https://api.themoviedb.org/3/configuration?api_key=c90b7e72cfb0ae1dab40f95effe976ab';
         
         fetch(endpoint)
             .then(response=>response.json())
             .then(json=>this.setState({baseUrl: json.images.base_url}))
+        */
+        this.props.getConfig();
     }
     
     
@@ -44,13 +47,23 @@ class App extends Component {
                 <Route path="/movies/genre/:genreId?/:page?" render={({match})=>(
                     <div className="card-deck p-3" >
                         <GenreList genre={match.params.genreId} />
-                        {match.params.genreId && <MovieList key={match.params.genreId} genre={match.params.genreId} imagepath={this.state.baseUrl} page={match.params.page || 1}/>}
+                        {match.params.genreId && <MovieList key={match.params.genreId} genre={match.params.genreId} page={match.params.page || 1}/>}
                     </div>
                 )} />
-                <Route path="/movie/:movieId" render={({match})=><MovieDetails {...match} imagepath={this.state.baseUrl} />}></Route>
+                <Route path="/movie/:movieId" render={({match})=><MovieDetails {...match} />}></Route>
             </div>
         );
     }
 }
 
-export default App;
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getConfig: () => {
+            dispatch(configurationFetch())
+        }
+    }
+}
+
+
+export default withRouter(connect(null, mapDispatchToProps)(App));
