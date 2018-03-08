@@ -4,9 +4,6 @@ import { genreFetch, genreSelect } from '../Redux/actions.js';
 import { connect } from 'react-redux';
 
 class GenreList extends Component{
-    constructor(props){
-        super(props);
-    }
     componentDidMount(){
         this.props.getGenres(+this.props.genre || 0);
     }
@@ -16,7 +13,8 @@ class GenreList extends Component{
     }
     
     render(){
-        const {currentGenre, genres, selectGenre, genre:routerGenre} = this.props;
+        const {currentGenre, genres, selectGenre, genre:routerGenre, isFetching} = this.props;
+        if (isFetching !== false) return null;
         if(genres.length && !routerGenre) return <Redirect to={`/movies/genre/${genres[0].id}`} />;
         return (
             <div id="genre-list" className="card w-25">
@@ -26,7 +24,7 @@ class GenreList extends Component{
                     {genres.map((genre)=>(
                     <Link 
                         to={`/movies/genre/${genre.id}`} 
-                        className={`list-group-item list-group-item-action ${genre.id==currentGenre?'active':null}`} 
+                        className={`list-group-item list-group-item-action ${genre.id===currentGenre?'active':null}`} 
                         key={genre.id} data-id={genre.id}
                         onClick={()=>selectGenre(genre.id)}
                         >{genre.name}</Link>
@@ -41,8 +39,9 @@ class GenreList extends Component{
 
 const mapStateToProps = (state) => {
     return {
-        genres: state.genres.list || [],
-        currentGenre: state.genres.selected
+        genres: state.genres.list,
+        currentGenre: state.genres.selected,
+        isFetching: state.genres.isFetching
     }
 }
 const mapDispatchToProps = (dispatch) => {

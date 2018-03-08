@@ -19,11 +19,13 @@ const listAndSelectedReducerCreator = (prefix) => {
 
 const genres = listAndSelectedReducerCreator("GENRE")
 const movies = listAndSelectedReducerCreator("MOVIE")
+const moviedetails = listAndSelectedReducerCreator("MOVIE_DETAILS")
 const configuration = listAndSelectedReducerCreator("CONFIGURATION")
 
 const movieApp = combineReducers({
     genres, 
     movies, 
+    moviedetails,
     configuration
     });
 

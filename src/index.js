@@ -7,18 +7,28 @@ import registerServiceWorker from './registerServiceWorker';
 
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose  } from 'redux';
 import { Provider } from 'react-redux';
 import movieApp from './Redux/reducers.js'
 
 const loggerMiddleware = createLogger()
-const store = createStore( 
+// debugging tools
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(movieApp, /* preloadedState, */ composeEnhancers(
+    applyMiddleware(
+        thunkMiddleware,
+        loggerMiddleware
+    )
+  )
+)
+    
+/*const store = createStore( 
     movieApp,
     applyMiddleware(
         thunkMiddleware,
         loggerMiddleware
     )
-)
+)*/
 
 
 ReactDOM.render((

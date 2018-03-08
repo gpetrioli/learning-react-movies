@@ -3,6 +3,9 @@ export const MOVIE_REQUEST  = "MOVIE_REQUEST"
 export const MOVIE_RECEIVE  = "MOVIE_RECEIVE"
 export const MOVIE_SELECT   = "MOVIE_SELECT"
 
+export const MOVIE_DETAILS_REQUEST  = "MOVIE_DETAILS_REQUEST"
+export const MOVIE_DETAILS_RECEIVE  = "MOVIE_DETAILS_RECEIVE"
+
 export const GENRE_REQUEST  = "GENRE_REQUEST"
 export const GENRE_RECEIVE  = "GENRE_RECEIVE"
 export const GENRE_SELECT   = "GENRE_SELECT"
@@ -28,24 +31,31 @@ const fetchFactory = (endpoint) => {
         const urlparams = Object.keys(params||{}).map(key=>`&${key}=${params[key]}`)
         let url = `${API_URL}${endpoint}?api_key=${API_KEY}${urlparams}`
         if (typeof dynamicEndpointParams === 'object'){
-            url = url.replace(/\{.+\}/gi, key=>dynamicEndpointParams[key])
+            url = url.replace(/\{(.+)\}/gi, (match,key)=>dynamicEndpointParams[key]||match)
         }
+        console.log('PARAMS', params, dynamicEndpointParams)
         return fetch(url).then(response=>response.json());
     }
 }
+
+// user available utilities
+
 
 
 // INTERNAL FETCH METHODS (through the generator)
 const fetchConfiguration = fetchFactory('configuration')
 const fetchGenres = fetchFactory('genre/movie/list')
 const fetchMovies = fetchFactory('discover/movie')
-const fetchMovie = fetchFactory('movie/{movieID}')
+const fetchMovieDetails = fetchFactory('movie/{movieID}')
 
 
 // ACTIONS (through the generator)
 export const movieRequest = actionFactory(MOVIE_REQUEST)
 export const movieReceive = actionFactory(MOVIE_RECEIVE)
 export const movieSelect = actionFactory(MOVIE_SELECT)
+
+export const movieDetailsRequest = actionFactory(MOVIE_DETAILS_REQUEST)
+export const movieDetailsReceive = actionFactory(MOVIE_DETAILS_RECEIVE)
 
 export const genreRequest = actionFactory(GENRE_REQUEST)
 export const genreReceive = actionFactory(GENRE_RECEIVE)
@@ -57,6 +67,32 @@ export const configurationReceive = actionFactory(CONFIGURATION_RECEIVE)
 
 
 // THUNKS (async actions)
+export const configurationFetch = () => {
+    return (dispatch) => {
+        dispatch(configurationRequest({isFetching:true}))
+        return fetchConfiguration().then(json=>{
+            dispatch(configurationReceive({
+                baseUrl: json.images.base_url,
+                isFetching: false,
+            }));
+        })        
+    }
+};
+
+export const genreFetch = (currentGenre) => {
+    return (dispatch) => {
+        dispatch(genreRequest({isFetching:true}))
+        return fetchGenres().then(json=>{
+            dispatch(genreReceive({
+                list: json.genres,
+                isFetching: false,
+            }));
+            console.log('genre dispatch', currentGenre)
+            dispatch(genreSelect({selected: currentGenre || json.genres[0].id}))
+        })
+    }
+};
+
 export const moviesFetch = (genres,page) => {
     return (dispatch) => {
         dispatch(movieRequest({isFetching:true}))
@@ -75,32 +111,19 @@ export const moviesFetch = (genres,page) => {
     }
 };
 
-export const genreFetch = (currentGenre) => {
+export const movieDetailsFetch = (id) => {
     return (dispatch) => {
-        dispatch(genreRequest({isFetching:true}))
-        return fetchGenres().then(json=>{
-            dispatch(genreReceive({
-                list: json.genres,
-                isFetching: false,
-            }));
-            console.log('genre dispatch', currentGenre)
-            dispatch(genreSelect({selected: currentGenre || json.genres[0].id}))
+        dispatch(movieDetailsRequest({isFetching:true}))
+        return fetchMovieDetails({
+            append_to_response:'videos'
+        },{
+            movieID:id
+        }).then(json=>{
+            dispatch(movieDetailsReceive({
+                details: json,
+                fail: json.id?false:true,
+                isFetching:false
+            }))
         })
     }
 };
-
-
-export const configurationFetch = () => {
-    return (dispatch) => {
-        dispatch(configurationRequest({isFetching:true}))
-        return fetchConfiguration().then(json=>{
-            dispatch(configurationReceive({
-                baseUrl: json.images.base_url,
-                isFetching: false,
-            }));
-        })        
-    }
-};
-
-
-
