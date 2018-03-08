@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Moment from 'react-moment';
 import {Link, withRouter} from 'react-router-dom'
 import styles from './MovieList.module.css'
-import { moviesFetch } from '../Redux/actions.js'
+import { moviesFetch } from '../Redux/actions'
 import { connect } from 'react-redux'
 
 
@@ -12,35 +12,41 @@ class MovieList extends Component{
     
     _fetch(page){
         if (this.props.genre!==null){
-            this.props.getMovies(this.props.genre,page)
+            this.props.getMovies(this.props.match.params.genreId,page)
         }
     }
     
     componentDidMount(e){
-        this._fetch(this.props.page);
+        console.log("MOUNT")
+        this._fetch(this.props.match.params.page || 1);
     }
+    
     componentWillReceiveProps(props){
-        if ((+props.page) !== (+this.props.page)){
-            this._fetch(props.page);
+        const newPage = +props.match.params.page || 1,
+              currentPage = +this.props.match.params.page || 1;
+        
+        if (newPage !== currentPage){
+            this._fetch(newPage);
         }
     }
 
     
     render(){
-        const {page = 1, baseUrl, isFetching, genresFetching, genres} = this.props;
+        const {baseUrl, isFetching, genresFetching, genres} = this.props;
         const {list:movies, total_pages} = this.props.movies;
+        const {genreId:genre, page=1} = this.props.match.params;
         if (isFetching !== false || genresFetching !== false) return null;
-        
+
         return (
             <div id="movie-list" className="card w-75">
-                <div className="card-header">Movies <div className="float-right"><Paging route={`/movies/genre/${this.props.genre}/{page}`} genre={this.props.genre} page={+page} total_pages={total_pages} show_pages={6} className="justify-content-end"></Paging></div></div>
+                <div className="card-header">Movies <div className="float-right"><Paging route={`/movies/genre/${genre}/{page}`} genre={genre} page={+page} total_pages={total_pages} show_pages={6} className="justify-content-end"></Paging></div></div>
                <div className="card-block">
                 <ul className="d-flex flex-wrap" >
-                    {movies.map(movie=>( movie.poster_path && <MoviePreview {...this.props} moviegenres={genresByIds(genres, movie.genre_ids)} imagepath={baseUrl} movie={movie} key={movie.id}></MoviePreview>) )}
+                    {movies.map(movie=>( movie.poster_path && <MoviePreview moviegenres={genresByIds(genres, movie.genre_ids)} imagepath={baseUrl} movie={movie} key={movie.id}></MoviePreview>) )}
                 </ul>
                 </div>
                 <div className="card-footer">
-                    <Paging route={`/movies/genre/${this.props.genre}/{page}`} genre={this.props.genre} page={+page} total_pages={total_pages} show_pages={10} className="justify-content-center"></Paging>
+                    <Paging route={`/movies/genre/${genre}/{page}`} genre={genre} page={+page} total_pages={total_pages} show_pages={10} className="justify-content-center"></Paging>
                 </div>
             </div>
         )
@@ -51,12 +57,12 @@ class MovieList extends Component{
 
 class MoviePreview extends Component{
     render(){
-        const {movie, moviegenres} = this.props;
+        const {movie, moviegenres, imagepath} = this.props;
         
         return(
             <div className="col-md-12 col-lg-6 col-xl-4 pb-3" key={movie.id}>
-                <li className="card h-100"  data-backdrop={`${this.props.imagepath}w1280${movie.backdrop_path}`}>
-                  <img className="card-img-top img-fluid" src={`${this.props.imagepath}w300${movie.poster_path}`} alt={movie.title} />
+                <li className="card h-100"  data-backdrop={`${imagepath}w1280${movie.backdrop_path}`}>
+                  <img className="card-img-top img-fluid" src={`${imagepath}w300${movie.poster_path}`} alt={movie.title} />
                   <div className="card-block">
                     <h4 className="card-title">{movie.title}</h4>
                     <p className="card-text"><small className="text-muted">Released on <Moment format="DD-MM-YYYY">{movie.release_date}</Moment></small></p>

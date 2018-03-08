@@ -6,18 +6,11 @@ import MovieList from './Components/MovieList';
 import MovieDetails from './Components/MovieDetails';
 
 import { connect } from 'react-redux';
-import {configurationFetch} from './Redux/actions.js';
+import {configurationFetch} from './Redux/actions';
 
 
 class App extends Component {
     componentDidMount(){
-        /*
-        let endpoint = 'https://api.themoviedb.org/3/configuration?api_key=c90b7e72cfb0ae1dab40f95effe976ab';
-        
-        fetch(endpoint)
-            .then(response=>response.json())
-            .then(json=>this.setState({baseUrl: json.images.base_url}))
-        */
         this.props.getConfig();
     }
     
@@ -42,8 +35,8 @@ class App extends Component {
                 </nav>
                 <Route path="/movies/genre/:genreId?/:page?" render={({match})=>(
                     <div className="card-deck p-3" >
-                        <GenreList genre={match.params.genreId} />
-                        {match.params.genreId && <MovieList key={`movies-${match.params.genreId}`} genre={match.params.genreId} page={match.params.page || 1}/>}
+                        <GenreList />
+                        {match.params.genreId && <MovieList key={`movies-${match.params.genreId}`}/>}
                     </div>
                 )} />
                 <Route path="/movie/:movieId" render={({match})=><MovieDetails {...match} />}></Route>

@@ -33,7 +33,6 @@ const fetchFactory = (endpoint) => {
         if (typeof dynamicEndpointParams === 'object'){
             url = url.replace(/\{(.+)\}/gi, (match,key)=>dynamicEndpointParams[key]||match)
         }
-        console.log('PARAMS', params, dynamicEndpointParams)
         return fetch(url).then(response=>response.json());
     }
 }
@@ -87,8 +86,6 @@ export const genreFetch = (currentGenre) => {
                 list: json.genres,
                 isFetching: false,
             }));
-            console.log('genre dispatch', currentGenre)
-            dispatch(genreSelect({selected: currentGenre || json.genres[0].id}))
         })
     }
 };
@@ -107,6 +104,8 @@ export const moviesFetch = (genres,page) => {
                 total_pages: Math.min(+json.total_pages,1000),
                 isFetching: false
             }))
+            
+            dispatch(genreSelect({selected: genres}))
         })
     }
 };

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Redirect, Link, withRouter} from 'react-router-dom';
 import styles from './MovieDetails.module.css';
-import { movieDetailsFetch } from '../Redux/actions.js'
+import { movieDetailsFetch } from '../Redux/actions'
 import { connect } from 'react-redux'
 
  class MovieDetails extends Component{

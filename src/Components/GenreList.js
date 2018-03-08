@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {Link, Redirect, withRouter} from 'react-router-dom';
-import { genreFetch, genreSelect } from '../Redux/actions.js';
+import { genreFetch, genreSelect } from '../Redux/actions';
 import { connect } from 'react-redux';
 
 class GenreList extends Component{
     componentDidMount(){
-        this.props.getGenres(+this.props.genre || 0);
+        this.props.getGenres(+this.props.match.params.genreId || 0);
     }
     
     getGenreNameById(genreId){
@@ -13,7 +13,9 @@ class GenreList extends Component{
     }
     
     render(){
-        const {currentGenre, genres, selectGenre, genre:routerGenre, isFetching} = this.props;
+        const {currentGenre, genres, selectGenre, isFetching} = this.props;
+        const {genreId:routerGenre} = this.props.match.params;
+        
         if (isFetching !== false) return null;
         if(genres.length && !routerGenre) return <Redirect to={`/movies/genre/${genres[0].id}`} />;
         return (
@@ -21,21 +23,22 @@ class GenreList extends Component{
                <div className="card-header">Genre List</div>
                <div className="card-block">
                 <div className="list-group">
-                    {genres.map((genre)=>(
-                    <Link 
-                        to={`/movies/genre/${genre.id}`} 
-                        className={`list-group-item list-group-item-action ${genre.id===currentGenre?'active':null}`} 
-                        key={genre.id} data-id={genre.id}
-                        onClick={()=>selectGenre(genre.id)}
-                        >{genre.name}</Link>
-                    ))}
+                    {genres.map((genre)=>{
+                        const active = (genre.id===+currentGenre),
+                              key = `${genre.id}-${active?'active':''}`
+                        return (<Link 
+                                    key={key}
+                                    to={`/movies/genre/${genre.id}`} 
+                                    className={`list-group-item list-group-item-action ${active?'active':''}`} 
+                                    >{genre.name}</Link>
+                                )
+                    })}
                 </div>
                 </div>
             </div>
         )
     }
 }
-
 
 const mapStateToProps = (state) => {
     return {

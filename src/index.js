@@ -9,7 +9,7 @@ import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import { createStore, applyMiddleware, compose  } from 'redux';
 import { Provider } from 'react-redux';
-import movieApp from './Redux/reducers.js'
+import movieApp from './Redux/reducers'
 
 const loggerMiddleware = createLogger()
 // debugging tools
