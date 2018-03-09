@@ -32,27 +32,26 @@ import { connect } from 'react-redux'
                                                         alt={movie.original_title}></img></div>
                     <div className="col-7">
                         <div className={`${styles.text} ${styles['text-summary']} mb-2`}>{movie.overview}</div>
-                        <div className="mb-2">{(movie.genres).map(({name,id})=>(
-                                <Link 
-                                    to={`/movies/genre/${id}`}
-                                    className={styles.genre}
-                                    key={id}>{name}</Link>
-                            ))}</div>
-                        <div className="container-fluid">
-                           <div className="row">
-                            <div className="list-group col-6">
-                             {movie.videos.results.filter(video=>video.site==="YouTube").map(video=>(
+                        <div className="dropdown float-right">
+                          <button className="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">Available videos</button>
+                          <div className={`${styles['dropdown-scroll']} dropdown-menu dropdown-menu-right`}>
+                            {movie.videos.results.filter(video=>video.site==="YouTube").map(video=>(
                                 <a 
-                                    className="list-group-item list-group-item-action" 
+                                    className="dropdown-item" 
                                     href={`https://youtu.be/${video.key}`}
                                     target="_blank"
                                     rel="noreferer noopener"
                                     key={video.key}
                                     >{video.name}</a>
                             ))}
-                            </div>
-                            </div>
-                        </div>
+                          </div>
+                        </div>                        
+                        <div className="mb-2">{(movie.genres).map(({name,id})=>(
+                                <Link 
+                                    to={`/movies/genre/${id}`}
+                                    className={styles.genre}
+                                    key={id}>{name}</Link>
+                            ))}</div>
                     </div>
                 </div>
             </div>

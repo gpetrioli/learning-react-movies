@@ -28,3 +28,8 @@ h1{
 .genre:hover{
     color:gold;
 }
+
+.dropdown-scroll{
+    max-height:15em;
+    overflow:auto;
+}
