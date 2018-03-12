@@ -4,12 +4,44 @@ import styles from './MovieDetails.module.css';
 import { movieDetailsFetch } from '../Redux/actions'
 import { connect } from 'react-redux'
 
+
+const Conditional = ({check, children}) => {
+    if (!check) return null;
+    return children;
+}
+
+
+const VideoPopup = ({video, closeHandler}) =>{
+    return (
+        <div className={styles['video-popup']} onClick={closeHandler}>
+            <iframe id="ytplayer" type="text/html" width="640" height="360"
+              src={`https://www.youtube.com/embed/${video}?autoplay=1&showinfo=0&rel=0&modestbranding=1`}
+              frameborder="0"></iframe>
+        </div>
+    )
+}
+
  class MovieDetails extends Component{
 
+     constructor(props){
+         super(props);
+         this.state = {
+             video: 0
+         }
+         
+         this.selectVideo = this.selectVideo.bind(this);
+     }
+     
     componentDidMount(){
         this.props.getMovie(this.props.params.movieId);
     }
     
+     
+    selectVideo(id){
+        this.setState({
+            video: id
+        })
+    }
     
     render(){
         const {details:movie, fail, isFetching} = this.props;
@@ -33,8 +65,9 @@ import { connect } from 'react-redux'
                     <div className="col-7">
                         <div className={`${styles.text} ${styles['text-summary']} mb-2`}>{movie.overview}</div>
                         <div className="dropdown float-right">
+                         <Conditional check={movie.videos.results && movie.videos.results.length}>
                           <button className="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">Available videos</button>
-                          <div className={`${styles['dropdown-scroll']} dropdown-menu dropdown-menu-right`}>
+                           <div className={`${styles['dropdown-scroll']} dropdown-menu dropdown-menu-right`}>
                             {movie.videos.results.filter(video=>video.site==="YouTube").map(video=>(
                                 <a 
                                     className="dropdown-item" 
@@ -42,10 +75,12 @@ import { connect } from 'react-redux'
                                     target="_blank"
                                     rel="noreferer noopener"
                                     key={video.key}
+                                    onClick={(e)=>{e.preventDefault();this.selectVideo(video.key)}}
                                     >{video.name}</a>
                             ))}
-                          </div>
-                        </div>                        
+                          </div> 
+                        </Conditional>  
+                        </div>                     
                         <div className="mb-2">{(movie.genres).map(({name,id})=>(
                                 <Link 
                                     to={`/movies/genre/${id}`}
@@ -54,6 +89,9 @@ import { connect } from 'react-redux'
                             ))}</div>
                     </div>
                 </div>
+                <Conditional check={this.state.video !== 0}>
+                    <VideoPopup video={this.state.video} closeHandler={()=>this.selectVideo(0)}></VideoPopup>
+                </Conditional>
             </div>
         )
     }

@@ -16,6 +16,9 @@ html:before{
 
 
 /*Genre list*/
+@media (min-width:800px){
+    #genre-list{flex-grow:0}
+}
 #genre-list a{cursor:pointer;}
 #genre-list .selected,
 #genre-list .selected a{
