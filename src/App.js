@@ -29,7 +29,7 @@ class App extends Component {
                     <div className="collapse navbar-collapse" id="navbarNav">
                     <div className="navbar-nav" id="navbarNav">
                         <Link to="/movies/genre" className="nav-item nav-link">By genre</Link>
-                        <Link to="/movies/year" className="nav-item nav-link">By year</Link>
+                        <Link to="/movies/year" className="nav-item nav-link disabled">By year</Link>
                     </div>
                     </div>
                 </nav>
