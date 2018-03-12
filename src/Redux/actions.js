@@ -114,7 +114,7 @@ export const movieDetailsFetch = (id) => {
     return (dispatch) => {
         dispatch(movieDetailsRequest({isFetching:true}))
         return fetchMovieDetails({
-            append_to_response:'videos'
+            append_to_response:'videos,external_ids,credits'
         },{
             movieID:id
         }).then(json=>{
