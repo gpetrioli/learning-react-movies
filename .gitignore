@@ -8,8 +8,6 @@
 
 # production
 /build
-deploy.env
-deploy.bat
 
 # misc
 .DS_Store
