@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {HashRouter} from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
@@ -21,20 +21,13 @@ const store = createStore(movieApp, /* preloadedState, */ composeEnhancers(
     )
   )
 )
-    
-/*const store = createStore( 
-    movieApp,
-    applyMiddleware(
-        thunkMiddleware,
-        loggerMiddleware
-    )
-)*/
+
 
 
 ReactDOM.render((
     <Provider store={store}>
-        <HashRouter basename="/">
+        <BrowserRouter>
             <App/>
-        </HashRouter>
+        </BrowserRouter>
     </Provider>), document.getElementById('root'));
 registerServiceWorker();
