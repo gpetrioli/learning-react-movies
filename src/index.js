@@ -26,7 +26,7 @@ const store = createStore(movieApp, /* preloadedState, */ composeEnhancers(
 
 ReactDOM.render((
     <Provider store={store}>
-        <BrowserRouter>
+        <BrowserRouter basename="/learning-react-movies">
             <App/>
         </BrowserRouter>
     </Provider>), document.getElementById('root'));
