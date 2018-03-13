@@ -14,7 +14,6 @@ html:before{
 }
 
 
-
 /*Genre list*/
 @media (min-width:800px){
     #genre-list{flex-grow:0}
