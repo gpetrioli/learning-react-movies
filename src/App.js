@@ -18,13 +18,13 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-                <nav className="navbar navbar-toggleable-md navbar-light bg-faded">
-                  <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
                     <span className="navbar-toggler-icon"></span>
                   </button>
                     <Link to="/" className="navbar-brand">
-                    <img src="/assets/brand/bootstrap-solid.svg" width="30" height="30" className="d-inline-block align-top" alt="" />
-                    React Movies <small><small>(<em>learning</em>)</small></small>
+                        <img src="/assets/brand/bootstrap-solid.svg" width="30" height="30" className="d-inline-block align-top" alt="" />
+                        React Movies <small><small>(<em>learning</em>)</small></small>
                     </Link>
                     <div className="collapse navbar-collapse" id="navbarNav">
                     <div className="navbar-nav" id="navbarNav">
@@ -33,13 +33,23 @@ class App extends Component {
                     </div>
                     </div>
                 </nav>
-                <Route path="/movies/genre/:genreId?/:page?" render={({match})=>(
-                    <div className="card-deck p-3" >
-                        <GenreList />
-                        {match.params.genreId && <MovieList key={`movies-${match.params.genreId}`}/>}
-                    </div>
-                )} />
-                <Route path="/movie/:movieId" render={({match})=><MovieDetails {...match} />}></Route>
+                <div className="container-fluid">
+                        <Route path="/movies/genre/:genreId?/:page?" render={({match})=>(
+                            <div className="row">
+                                <div className="col-lg-3">
+                                    <GenreList />
+                                </div>
+                                <div className="col-lg-9">
+                                    {match.params.genreId && <MovieList key={`movies-${match.params.genreId}`}/>}
+                                </div>
+                            </div>
+                        )} />
+                        <Route path="/movie/:movieId" render={({match})=>(
+                            <div>
+                                <MovieDetails {...match} />
+                            </div>
+                        )}></Route>
+                </div>
             </div>
         );
     }

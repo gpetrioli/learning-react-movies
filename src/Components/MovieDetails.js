@@ -36,6 +36,9 @@ const VideoPopup = ({video, closeHandler}) =>{
         this.props.getMovie(this.props.params.movieId);
     }
     
+    componentWillUnmount(){
+        document.documentElement.style.removeProperty('--backdrop','');
+    }
      
     selectVideo(id){
         this.setState({
@@ -46,6 +49,9 @@ const VideoPopup = ({video, closeHandler}) =>{
     render(){
         const {details:movie, fail, isFetching} = this.props;
         
+        
+        document.documentElement.style.removeProperty('--backdrop');
+        
         if (isFetching !== false) return null;
         if (fail){
             return <Redirect to="/movies/genre" push={true} />
@@ -53,7 +59,9 @@ const VideoPopup = ({video, closeHandler}) =>{
         
         const backdrop = `${this.props.imagepath}w1280${movie.backdrop_path}`,
               poster = `${this.props.imagepath}w780${movie.poster_path}`;
+        
         document.documentElement.style.setProperty('--backdrop',`url('${backdrop}')`);
+        
         return (
             <div className="container-fluid">
                 <h1 className="text-center">{movie.original_title}</h1>

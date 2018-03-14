@@ -37,8 +37,6 @@ const fetchFactory = (endpoint) => {
     }
 }
 
-// user available utilities
-
 
 
 // INTERNAL FETCH METHODS (through the generator)

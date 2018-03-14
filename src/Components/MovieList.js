@@ -38,12 +38,12 @@ class MovieList extends Component{
         if (isFetching !== false || genresFetching !== false) return null;
 
         return (
-            <div id="movie-list" className="card w-75">
-                <div className="card-header">Movies <div className="float-right"><Paging route={`/movies/genre/${genre}/{page}`} genre={genre} page={+page} total_pages={total_pages} show_pages={6} className="justify-content-end"></Paging></div></div>
-               <div className="card-block">
-                <ul className="d-flex flex-wrap" >
-                    {movies.map(movie=>( movie.poster_path && <MoviePreview moviegenres={genresByIds(genres, movie.genre_ids)} imagepath={baseUrl} movie={movie} key={movie.id}></MoviePreview>) )}
-                </ul>
+            <div id="movie-list" className="card bg-light mt-3">
+                <div className="card-header d-flex">Movies <div className="ml-auto align-self-center"><Paging route={`/movies/genre/${genre}/{page}`} genre={genre} page={+page} total_pages={total_pages} show_pages={6} className="pagination-sm"></Paging></div></div>
+                <div className="card-body">
+                    <ul className="d-flex flex-wrap mt-3">
+                        {movies.map(movie=>( movie.poster_path && <MoviePreview moviegenres={genresByIds(genres, movie.genre_ids)} imagepath={baseUrl} movie={movie} key={movie.id}></MoviePreview>) )}
+                    </ul>
                 </div>
                 <div className="card-footer">
                     <Paging route={`/movies/genre/${genre}/{page}`} genre={genre} page={+page} total_pages={total_pages} show_pages={10} className="justify-content-center"></Paging>
@@ -63,14 +63,14 @@ class MoviePreview extends Component{
             <div className="col-md-12 col-lg-6 col-xl-4 pb-3" key={movie.id}>
                 <li className="card h-100"  data-backdrop={`${imagepath}w1280${movie.backdrop_path}`}>
                   <img className="card-img-top img-fluid" src={`${imagepath}w300${movie.poster_path}`} alt={movie.title} />
-                  <div className="card-block">
+                  <div className="card-body">
                     <h4 className="card-title">{movie.title}</h4>
                     <p className="card-text"><small className="text-muted">Released on <Moment format="DD-MM-YYYY">{movie.release_date}</Moment></small></p>
                     <p className={`card-text ${styles['movie-genres']}`}>{moviegenres.map(genre=>(<small className="badge badge-info" key={genre.id}>{genre.name}</small>))}</p>
                     <p className="card-text overview">{movie.overview}</p>
                   </div>
                   <div className="card-footer">
-                    <Link to={`/movie/${movie.id}`} className="card-link float-right">more</Link>
+                    <Link to={`/movie/${movie.id}`} className="btn btn-primary btn-sm float-right">more</Link>
                   </div>
                 </li>
             </div>

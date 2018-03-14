@@ -10,7 +10,7 @@ body {
 }
 
 footer {
-  position: fixed;
+  position: absolute;
   left:0;
   bottom: 0;
   width: 100%;
@@ -20,6 +20,9 @@ footer {
   box-shadow: 0 -2px 4px -4px #000;
   font-size: 0.6rem;
   text-align:center;
+}
+@media (min-width:992px){
+    footer{position:fixed;}
 }
 
 .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}

@@ -19,21 +19,21 @@ class GenreList extends Component{
         if (isFetching !== false) return null;
         if(genres.length && !routerGenre) return <Redirect to={`/movies/genre/${genres[0].id}`} />;
         return (
-            <div id="genre-list" className="card w-25">
-               <div className="card-header">Genre List</div>
-               <div className="card-block">
-                <div className="list-group">
-                    {genres.map((genre)=>{
-                        const active = (genre.id===+currentGenre),
-                              key = `${genre.id}-${active?'active':''}`
-                        return (<Link 
-                                    key={key}
-                                    to={`/movies/genre/${genre.id}`} 
-                                    className={`list-group-item list-group-item-action ${active?'active':''}`} 
-                                    >{genre.name}</Link>
-                                )
-                    })}
-                </div>
+            <div id="genre-list" className="card bg-light mt-3">
+                <div className="card-header">Genre List</div>
+                <div className="card-body">
+                    <div className="list-group m-3">
+                        {genres.map((genre)=>{
+                            const active = (genre.id===+currentGenre),
+                                  key = `${genre.id}-${active?'active':''}`
+                            return (<Link 
+                                        key={key}
+                                        to={`/movies/genre/${genre.id}`} 
+                                        className={`list-group-item list-group-item-action ${active?'active':''}`} 
+                                        >{genre.name}</Link>
+                                    )
+                        })}
+                    </div>
                 </div>
             </div>
         )
