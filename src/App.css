@@ -7,7 +7,7 @@ html:before{
     bottom:0;
     z-index:-1;
     background-color:rgba(248,249,250,0.7);
-    background-image: var(--backdrop, url('/img/movie-reel.jpg'));
+    background-image: var(--backdrop, url('../../img/movie-reel.jpg'));
     background-size:cover;
     background-attachment: fixed;
     filter:sepia(100%) blur(3px)
