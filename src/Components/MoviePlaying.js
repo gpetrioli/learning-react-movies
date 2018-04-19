@@ -10,12 +10,10 @@ import * as Utils from '../Utils'
 class MoviePlaying extends Component{
     
     _fetch(region, page){
-        console.log('fetching', region);
         this.props.getMoviesPlaying(region, page);
     }
     
     componentDidMount(e){
-        console.log("MOUNT")
         const {region = "GR"} = this.props;
         this._fetch(region, this.props.match.params.page || 1);
     }

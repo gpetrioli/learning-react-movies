@@ -19,12 +19,6 @@ class App extends Component {
     
     componentDidMount(){
         this.props.getConfig();
-        window.jQuery(function($){
-            $("#navbarNav .dropdown").on("shown.bs.dropdown", function() {
-                console.log()
-               $(this).find(".dropdown-menu li.active a").focus()
-            });
-        })
     }
     
     componentDidUpdate(){

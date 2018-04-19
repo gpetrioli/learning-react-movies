@@ -15,7 +15,6 @@ class MovieList extends Component{
     }
     
     componentDidMount(e){
-        console.log("MOUNT")
         this._fetch(this.props.match.params.page || 1);
     }
     
