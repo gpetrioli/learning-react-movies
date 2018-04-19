@@ -80,7 +80,7 @@ export const configurationFetch = () => {
         dispatch(configurationRequest({isFetching:true}))
         return fetchConfiguration().then(([basic, countries])=>{
             dispatch(configurationReceive({
-                baseUrl: basic.images.base_url,
+                baseUrl: basic.images.secure_base_url,
                 countries, 
                 isFetching: false
             }));
