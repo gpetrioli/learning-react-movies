@@ -16,8 +16,8 @@ const loggerMiddleware = createLogger()
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(movieApp, /* preloadedState, */ composeEnhancers(
     applyMiddleware(
-        thunkMiddleware,
-        loggerMiddleware
+        thunkMiddleware
+        ,loggerMiddleware
     )
   )
 )

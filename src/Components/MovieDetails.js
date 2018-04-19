@@ -14,7 +14,7 @@ const Conditional = ({check, children}) => {
 const VideoPopup = ({video, closeHandler}) =>{
     return (
         <div className={styles['video-popup']} onClick={closeHandler}>
-            <iframe id="ytplayer" type="text/html" width="640" height="360"
+            <iframe id="ytplayer" type="text/html" width="640" height="360" title={`Embed youtube video with id ${video}`}
               src={`https://www.youtube.com/embed/${video}?autoplay=1&showinfo=0&rel=0&modestbranding=1`}
               frameborder="0"></iframe>
         </div>
@@ -74,19 +74,19 @@ const VideoPopup = ({video, closeHandler}) =>{
                         <div className={`${styles.text} ${styles['text-summary']} mb-2`}>{movie.overview}</div>
                         <div className="dropdown float-right">
                          <Conditional check={movie.videos.results && movie.videos.results.length}>
-                          <button className="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">Available videos</button>
-                           <div className={`${styles['dropdown-scroll']} dropdown-menu dropdown-menu-right`}>
-                            {movie.videos.results.filter(video=>video.site==="YouTube").map(video=>(
-                                <a 
-                                    className="dropdown-item" 
-                                    href={`https://youtu.be/${video.key}`}
-                                    target="_blank"
-                                    rel="noreferer noopener"
-                                    key={video.key}
-                                    onClick={(e)=>{e.preventDefault();this.selectVideo(video.key)}}
-                                    >{video.name}</a>
-                            ))}
-                          </div> 
+                            <button className="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">Available videos</button>
+                            <div className={`${styles['dropdown-scroll']} dropdown-menu dropdown-menu-right`}>
+                                {movie.videos.results.filter(video=>video.site==="YouTube").map(video=>(
+                                    <a 
+                                        className="dropdown-item" 
+                                        href={`https://youtu.be/${video.key}`}
+                                        target="_blank"
+                                        rel="noreferer noopener"
+                                        key={video.key}
+                                        onClick={(e)=>{e.preventDefault();this.selectVideo(video.key)}}
+                                        >{video.name}</a>
+                                ))}
+                            </div> 
                         </Conditional>  
                         </div>                     
                         <div className="mb-2">{(movie.genres).map(({name,id})=>(

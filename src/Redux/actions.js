@@ -12,6 +12,7 @@ export const GENRE_SELECT   = "GENRE_SELECT"
 
 export const CONFIGURATION_REQUEST = "CONFIGURATION_REQUEST"
 export const CONFIGURATION_RECEIVE = "CONFIGURATION_RECEIVE"
+export const CONFIGURATION_SELECT = "CONFIGURATION_SELECT"
 
 
 // UTILITIES / GENERATORS
@@ -28,7 +29,7 @@ const API_KEY = 'c90b7e72cfb0ae1dab40f95effe976ab'
 const API_URL = 'https://api.themoviedb.org/3/'
 const fetchFactory = (endpoint) => {
     return (params, dynamicEndpointParams) => {
-        const urlparams = Object.keys(params||{}).map(key=>`&${key}=${params[key]}`)
+        const urlparams = Object.keys(params||{}).map(key=>`&${key}=${params[key]}`).join('')
         let url = `${API_URL}${endpoint}?api_key=${API_KEY}${urlparams}`
         if (typeof dynamicEndpointParams === 'object'){
             url = url.replace(/\{(.+)\}/gi, (match,key)=>dynamicEndpointParams[key]||match)
@@ -40,9 +41,18 @@ const fetchFactory = (endpoint) => {
 
 
 // INTERNAL FETCH METHODS (through the generator)
-const fetchConfiguration = fetchFactory('configuration')
+const fetchBasicConfiguration = fetchFactory('configuration')
+const fetchCountriesConfiguration = fetchFactory('configuration/countries')
+
+const fetchConfiguration = function(){
+    return Promise.all([
+        fetchBasicConfiguration(),
+        fetchCountriesConfiguration()
+    ])
+}
 const fetchGenres = fetchFactory('genre/movie/list')
 const fetchMovies = fetchFactory('discover/movie')
+const fetchMoviesPlaying = fetchFactory('movie/now_playing')
 const fetchMovieDetails = fetchFactory('movie/{movieID}')
 
 
@@ -60,6 +70,7 @@ export const genreSelect = actionFactory(GENRE_SELECT)
 
 export const configurationRequest = actionFactory(CONFIGURATION_REQUEST)
 export const configurationReceive = actionFactory(CONFIGURATION_RECEIVE)
+export const configurationSelect = actionFactory(CONFIGURATION_SELECT)
 
 
 
@@ -67,16 +78,21 @@ export const configurationReceive = actionFactory(CONFIGURATION_RECEIVE)
 export const configurationFetch = () => {
     return (dispatch) => {
         dispatch(configurationRequest({isFetching:true}))
-        return fetchConfiguration().then(json=>{
+        return fetchConfiguration().then(([basic, countries])=>{
             dispatch(configurationReceive({
-                baseUrl: json.images.base_url,
-                isFetching: false,
+                baseUrl: basic.images.base_url,
+                countries, 
+                isFetching: false
             }));
+            
+            dispatch(configurationSelect({
+                selected: 'GR'
+            }))
         })        
     }
 };
 
-export const genreFetch = (currentGenre) => {
+export const genreFetch = () => {
     return (dispatch) => {
         dispatch(genreRequest({isFetching:true}))
         return fetchGenres().then(json=>{
@@ -106,6 +122,24 @@ export const moviesFetch = (genres,page) => {
             dispatch(genreSelect({selected: genres}))
         })
     }
+};
+
+export const moviesPlaying = (region, page) => {
+    return (dispatch) => {
+        dispatch(movieRequest({isFetching:true}))
+        return fetchMoviesPlaying({
+            region,
+            page
+        }).then(json=>{
+            dispatch(movieReceive({
+                list: json.results || [],
+                fail: (json.results) ? false : true,
+                page: +json.page,
+                total_pages: Math.min(+json.total_pages,1000),
+                isFetching: false
+            }))
+        })
+    } 
 };
 
 export const movieDetailsFetch = (id) => {

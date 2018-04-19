@@ -1,0 +1,1 @@
+export const genresByIds = (genres, ids) => genres.filter(genre=>ids.includes(genre.id))

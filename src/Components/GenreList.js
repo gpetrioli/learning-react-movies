@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
 import {Link, Redirect, withRouter} from 'react-router-dom';
-import { genreFetch, genreSelect } from '../Redux/actions';
+import { genreSelect } from '../Redux/actions';
 import { connect } from 'react-redux';
 
 class GenreList extends Component{
-    componentDidMount(){
-        this.props.getGenres(+this.props.match.params.genreId || 0);
-    }
     
     getGenreNameById(genreId){
         return this.state.genres.find(genre=>genre.id === genreId).name
     }
     
     render(){
-        const {currentGenre, genres, selectGenre, isFetching} = this.props;
+        const {currentGenre, genres, isFetching} = this.props;
         const {genreId:routerGenre} = this.props.match.params;
         
         if (isFetching !== false) return null;
@@ -49,9 +46,6 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        getGenres: (genre) => {
-            dispatch(genreFetch(genre))
-        },
         selectGenre: (id) => {
             dispatch(genreSelect({selected:id}))
         }

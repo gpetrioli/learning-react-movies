@@ -38,3 +38,8 @@ html:before{
 .card-header{background-color:#f0f1f2;line-height:35px}
 .card{background:rgba(248, 249, 250, 0.5)!important}
 .card-img-top{width:100%;}
+
+.dropdown-scroll{
+    max-height:15em;
+    overflow:auto;
+}
