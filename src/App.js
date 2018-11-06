@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import {Route,Link, withRouter } from 'react-router-dom';
+import {Route, withRouter } from 'react-router-dom';
 import './App.css';
+import NavBar from './Components/NavBar';
 import GenreList from './Components/GenreList';
 import MovieList from './Components/MovieList';
 import MoviePlaying from './Components/MoviePlaying';
@@ -39,41 +40,14 @@ class App extends Component {
 
     render() {
         const {countries,region} = this.props;
+        const navigationRequirements={
+            countries,
+            region,
+            regionHandler:this.handleRegionSelection
+        }
         return (
             <div className="App">
-                <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-                    <span className="navbar-toggler-icon"></span>
-                  </button>
-                    <Link to="/" className="navbar-brand">
-                        <img src="/assets/brand/bootstrap-solid.svg" width="30" height="30" className="d-inline-block align-top" alt="" />
-                        React Movies <small><small>(<em>learning</em>)</small></small>
-                    </Link>
-                    <div className="collapse navbar-collapse" id="navbarNav">
-                        <div className="navbar-nav mr-3 mb-2 mb-lg-0" id="navbarNav">
-                            <Link to="/movies/genre" className="nav-item nav-link">By genre</Link>
-                            <Link to="/movies/now-playing" className="nav-item nav-link">Now playing</Link>
-                        </div>
-                        {countries && 
-                            (<div className="dropdown">
-                                <button className="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownregion" data-toggle="dropdown">Region</button>
-                                <div className="dropdown-scroll dropdown-menu dropdown-menu-right">
-                                    {countries.map(country=>(
-                                        <a 
-                                            className={`dropdown-item ${country.iso_3166_1 === region?"active":""}`}
-                                            target="_blank"
-                                            href=""
-                                            rel="noreferer noopener"
-                                            key={country.iso_3166_1}
-                                            data-country={`${country.iso_3166_1}`}
-                                            onClick={this.handleRegionSelection}
-                                            >{country.english_name}</a>
-                                    ))}
-                                </div> 
-                            </div>)
-                        }
-                    </div>
-                </nav>
+                <NavBar {...navigationRequirements} />
                 <div className="container-fluid">
                         <Route path="/movies/genre/:genreId?/:page?" render={({match})=>(
                             <div className="row">
