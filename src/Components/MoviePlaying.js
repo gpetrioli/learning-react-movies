@@ -58,7 +58,7 @@ class MoviePlaying extends Component{
                             movies.length ? 
                                 movies.map(movie=>( movie.poster_path && <MoviePreview moviegenres={Utils.genresByIds(genres, movie.genre_ids)} sizes={['col-md-6','col-lg-4','col-xl-3']} imagepath={baseUrl} movie={movie} key={movie.id}></MoviePreview>) )
                                 :
-                            (<div class="alert alert-danger col-12">There were no movies found currently playing in <strong><em>{this.getCountryName()}</em></strong></div>)
+                            (<div className="alert alert-danger col-12">There were no movies found currently playing in <strong><em>{this.getCountryName()}</em></strong></div>)
                         }
                     </ul>
                 </div>
