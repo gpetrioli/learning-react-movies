@@ -1,28 +1,31 @@
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
-import { moviesPlaying } from '../Redux/actions'
-import { connect } from 'react-redux'
 import MoviePreview from './MoviePreview'
 import Paging from './Paging'
 import * as Utils from '../Utils'
+
+import {collect, moviesPlayingFetch, configurationSelector, moviesSelector, genresSelector} from "../Store"
 
 
 class MoviePlaying extends Component{
     
     _fetch(region, page){
-        this.props.getMoviesPlaying(region, page);
+        moviesPlayingFetch(region, page);
     }
     
     componentDidMount(e){
-        const {region = "GR"} = this.props;
+        const {store} = this.props;
+        const {selected:region = "GR"} = configurationSelector(store);
+        
         this._fetch(region, this.props.match.params.page || 1);
     }
     
     componentWillReceiveProps(props){
+        const {region:currentRegion} = this.props;
+        const {region:newRegion} = props
+
         const newPage = +props.match.params.page || 1,
-              currentPage = +this.props.match.params.page || 1,
-              newRegion = props.region,
-              currentRegion = this.props.region;
+              currentPage = +this.props.match.params.page || 1;
         
         if (newPage !== currentPage || newRegion !== currentRegion){
             this._fetch(newRegion, newPage);
@@ -30,21 +33,24 @@ class MoviePlaying extends Component{
     }
 
     getCountryName(){
-        const {region} = this.props;
+        const {store} = this.props;
+        const {selected:region, countries} = configurationSelector(store);    
         let countryName = '';
         
         if(region){
-            const currentCountry = this.props.countries.find(country=>country.iso_3166_1 === region)
-        
+            const currentCountry = countries.find(country=>country.iso_3166_1 === region)
             countryName = currentCountry.english_name;
         }
         return countryName;
     }
     
     render(){
-        const {baseUrl, isFetching, genresFetching, genres, configurationFetching} = this.props;
-        const {list:movies, total_pages} = this.props.movies;
+        const {store} = this.props;
+        const {list:movies, total_pages, isFetching} = moviesSelector(store);
+        const {isFetching:genresFetching, list:genres} = genresSelector(store);
+        const {baseUrl, isFetching:configurationFetching} = configurationSelector(store);
         const {page=1} = this.props.match.params;
+
         if (isFetching !== false || genresFetching !== false || configurationFetching !== false) return null;
 
         return (
@@ -70,25 +76,4 @@ class MoviePlaying extends Component{
     }
 }
 
-
-const mapStateToProps = (state) => {
-    return {
-        movies: state.movies,
-        baseUrl: state.configuration.baseUrl,
-        isFetching: state.movies.isFetching,
-        genresFetching: state.genres.isFetching,
-        genres: state.genres.list,
-        configurationFetching: state.configuration.isFetching,
-        countries: state.configuration.countries,
-        region: state.configuration.selected
-    }
-}
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getMoviesPlaying: (region,page) => {
-            dispatch(moviesPlaying(region, page))
-        }
-    }
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MoviePlaying));
+export default withRouter(collect(MoviePlaying));

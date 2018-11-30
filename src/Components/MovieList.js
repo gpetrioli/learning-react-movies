@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import {withRouter} from 'react-router-dom'
-import { moviesFetch } from '../Redux/actions'
-import { connect } from 'react-redux'
 import MoviePreview from './MoviePreview'
 import Paging from './Paging'
 import * as Utils from '../Utils'
+
+import {collect, moviesSelector, configurationSelector, genresSelector, moviesFetch} from "../Store";
+
 
 class MovieList extends Component{
     
     _fetch(page){
         if (this.props.genre!==null){
-            this.props.getMovies(this.props.match.params.genreId,page)
+            moviesFetch(this.props.match.params.genreId, page)
         }
     }
     
@@ -27,11 +28,14 @@ class MovieList extends Component{
         }
     }
 
-    
     render(){
-        const {baseUrl, isFetching, genresFetching, genres} = this.props;
-        const {list:movies, total_pages} = this.props.movies;
+
+        const {store} = this.props;
+        const {isFetching, list:movies, total_pages} = moviesSelector(store);
+        const {isFetching:genresFetching, list:genres} = genresSelector(store);
+        const {baseUrl} = configurationSelector(store); 
         const {genreId:genre, page=1} = this.props.match.params;
+
         if (isFetching !== false || genresFetching !== false) return null;
 
         return (
@@ -50,21 +54,4 @@ class MovieList extends Component{
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        movies: state.movies,
-        baseUrl: state.configuration.baseUrl,
-        isFetching: state.movies.isFetching,
-        genresFetching: state.genres.isFetching,
-        genres: state.genres.list
-    }
-}
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getMovies: (genre,page) => {
-            dispatch(moviesFetch(genre,page))
-        }
-    }
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MovieList));
+export default withRouter(collect(MovieList));

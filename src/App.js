@@ -7,27 +7,26 @@ import MovieList from './Components/MovieList';
 import MoviePlaying from './Components/MoviePlaying';
 import MovieDetails from './Components/MovieDetails';
 
-import { connect } from 'react-redux';
-import {configurationFetch, genreFetch, configurationSelect} from './Redux/actions';
-
+import { collect, configurationSelector, configurationFetch, genreFetch, updateRegion } from "./Store";
 
 class App extends Component {
     
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.handleRegionSelection = this._handleRegionSelection.bind(this);
     }
     
     componentDidMount(){
-        this.props.getConfig();
+        configurationFetch();
+        genreFetch();
     }
     
     componentDidUpdate(){
-
-        const {region} = this.props;
+        const {store} = this.props;
+        const {selected:region, countries} = configurationSelector(store);
         
-        if(region){
-            const countryName = this.props.countries.find(country=>country.iso_3166_1 === region).english_name
+        if(region && countries.length){
+            const countryName = countries.find(country=>country.iso_3166_1 === region).english_name
         
             document.querySelector("#navbarNav .dropdown-toggle").textContent = countryName;
         }
@@ -35,11 +34,12 @@ class App extends Component {
     
     _handleRegionSelection(e){
         e.preventDefault()
-        this.props.changeRegion(e.target.dataset.country)
+        updateRegion(e.target.dataset.country);
     }
 
     render() {
-        const {countries,region} = this.props;
+        const {store} = this.props;
+        const {countries,selected:region} = configurationSelector(store);
         const navigationRequirements={
             countries,
             region,
@@ -62,7 +62,7 @@ class App extends Component {
                         <Route path="/movies/now-playing/:page?" render={({match})=>(
                             <div className="row">
                                 <div className="col-lg-12">
-                                    {region && <MoviePlaying/>}
+                                    {region && <MoviePlaying region={region}/>}
                                 </div>
                             </div>
                         )} />
@@ -77,26 +77,4 @@ class App extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        region: state.configuration.selected,
-        countries: state.configuration.countries
-    }
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getConfig: () => {
-            dispatch(configurationFetch())
-            dispatch(genreFetch())
-        },
-        changeRegion: (region) => {
-            dispatch(configurationSelect({
-                selected: region
-            }))
-        }
-    }
-}
-
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
+export default withRouter(collect(App));
