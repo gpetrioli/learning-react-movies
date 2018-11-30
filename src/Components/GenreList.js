@@ -4,13 +4,6 @@ import {collect, genreFetch, genresSelector} from "../Store";
 
 
 class GenreList extends Component{
-    componentDidMount(){
-        const {store} = this.props;
-        const {list:genres} = genresSelector(store);
-        if (!genres.length) {
-            genreFetch();
-        }
-    }
     render(){
         const {store} = this.props
         const {selected:currentGenre, list:genres, isFetching} = genresSelector(store);

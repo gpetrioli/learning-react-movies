@@ -7,7 +7,7 @@ import MovieList from './Components/MovieList';
 import MoviePlaying from './Components/MoviePlaying';
 import MovieDetails from './Components/MovieDetails';
 
-import { collect, configurationSelector, configurationFetch, updateRegion } from "./Store";
+import { collect, configurationSelector, configurationFetch, genreFetch, updateRegion } from "./Store";
 
 class App extends Component {
     
@@ -18,6 +18,7 @@ class App extends Component {
     
     componentDidMount(){
         configurationFetch();
+        genreFetch();
     }
     
     componentDidUpdate(){

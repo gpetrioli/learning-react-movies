@@ -51,7 +51,7 @@ class MoviePlaying extends Component{
         const {baseUrl, isFetching:configurationFetching} = configurationSelector(store);
         const {page=1} = this.props.match.params;
 
-        if (isFetching !== false || /*genresFetching !== false ||*/ configurationFetching !== false) return null;
+        if (isFetching !== false || genresFetching !== false || configurationFetching !== false) return null;
 
         return (
             <div id="movie-list" className="card bg-light mt-3">
