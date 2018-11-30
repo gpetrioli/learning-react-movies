@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import {Redirect, Link, withRouter} from 'react-router-dom';
 import styles from './MovieDetails.module.css';
-import { movieDetailsFetch } from '../Redux/actions'
-import { connect } from 'react-redux'
 
+import {collect, movieDetailsFetch, moviedetailsSelector, configurationSelector} from "../Store";
 
 const Conditional = ({check, children}) => {
     if (!check) return null;
@@ -33,7 +32,7 @@ const VideoPopup = ({video, closeHandler}) =>{
      }
      
     componentDidMount(){
-        this.props.getMovie(this.props.params.movieId);
+        movieDetailsFetch(this.props.params.movieId);
     }
     
     componentWillUnmount(){
@@ -47,18 +46,20 @@ const VideoPopup = ({video, closeHandler}) =>{
     }
     
     render(){
-        const {details:movie, fail, isFetching} = this.props;
-        
+        const {store} = this.props;
+        const {details:movie, fail, isFetching} = moviedetailsSelector(store);
+        const {baseUrl:imagepath} = configurationSelector(store);
         
         document.documentElement.style.removeProperty('--backdrop');
         
         if (isFetching !== false) return null;
+
         if (fail){
             return <Redirect to="/movies/genre" push={true} />
         }
         
-        const backdrop = `${this.props.imagepath}w1280${movie.backdrop_path}`,
-              poster = `${this.props.imagepath}w780${movie.poster_path}`;
+        const backdrop = `${imagepath}w1280${movie.backdrop_path}`,
+              poster = `${imagepath}w780${movie.poster_path}`;
         
         document.documentElement.style.setProperty('--backdrop',`url('${backdrop}')`);
         
@@ -105,20 +106,4 @@ const VideoPopup = ({video, closeHandler}) =>{
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        details: state.moviedetails.details,
-        fail: state.moviedetails.fail,
-        isFetching: state.moviedetails.isFetching,
-        imagepath: state.configuration.baseUrl
-    }
-}
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getMovie: (id) => {
-            dispatch(movieDetailsFetch(id))
-        }
-    }
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MovieDetails));
+export default withRouter(collect(MovieDetails));
