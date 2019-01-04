@@ -39,7 +39,7 @@ export const configurationFetch = async () => {
     const [basic, countries] = await fetchConfiguration()
 
     store.configuration.baseUrl = basic.images.secure_base_url
-    store.configuration.countries = countries
+    store.configuration.countries = countries.sort((a,b)=>b.english_name < a.english_name)
     store.configuration.isFetching = false
     store.configuration.selected = "GR"
 };
