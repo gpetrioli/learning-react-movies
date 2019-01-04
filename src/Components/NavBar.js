@@ -8,7 +8,7 @@ const NavBar = ({countries, regionHandler, region}) =>{
         <span className="navbar-toggler-icon"></span>
         </button>
         <Link to="/" className="navbar-brand">
-            <img src="/assets/brand/bootstrap-solid.svg" width="30" height="30" className="d-inline-block align-top" alt="" />
+            <img src="/media/Film-icon.png" width="32" height="32" className="d-inline-block align-top" alt="" />&nbsp;
             React Movies <small><small>(<em>learning</em>)</small></small>
         </Link>
         <div className="collapse navbar-collapse" id="navbarNav">
